@@ -1,0 +1,114 @@
+# StockPortfolio.py
+
+class StockPortfolio:
+    def __init__(self):
+        self.portfolio = {}
+
+    def add_stock(self, ticker: str, shares: int, price: float = 0.0):
+        if shares <= 0:
+            print("Error: Number of shares must be positive.")
+            return
+        if ticker in self.portfolio:
+            self.portfolio[ticker]['shares'] += shares
+        else:
+            self.portfolio[ticker] = {'shares': shares, 'price': price}
+        print(f"Added {shares} shares of {ticker} to your portfolio.")
+
+    def remove_stock(self, ticker: str, shares: int):
+        if shares <= 0:
+            print("Error: Number of shares must be positive.")
+            return
+        if ticker in self.portfolio:
+            if self.portfolio[ticker]['shares'] > shares:
+                self.portfolio[ticker]['shares'] -= shares
+                print(f"Removed {shares} shares of {ticker}.")
+            elif self.portfolio[ticker]['shares'] == shares:
+                del self.portfolio[ticker]
+                print(f"Removed all shares of {ticker}.")
+            else:
+                print(f"Error: Not enough shares of {ticker} to remove.")
+        else:
+            print(f"Error: {ticker} is not in your portfolio.")
+
+    def display_portfolio(self):
+        if not self.portfolio:
+            print("Your portfolio is empty.")
+            return
+
+        print("\nPortfolio Summary:")
+        print(f"{'Ticker':<10}{'Shares':<10}{'Price':<15}{'Value':<15}")
+        print("-" * 50)
+        total_value = 0.0
+        for ticker, data in self.portfolio.items():
+            price = data['price']
+            shares = data['shares']
+            value = shares * price if price else 0.0
+            total_value += value
+            price_display = f"${price:.2f}" if price else "N/A"
+            value_display = f"${value:.2f}" if value else "N/A"
+            print(f"{ticker:<10}{shares:<10}{price_display:<15}{value_display:<15}")
+        print("-" * 50)
+        print(f"Total Portfolio Value: ${total_value:.2f}\n")
+
+    def run(self):
+        while True:
+            print("\nOptions:")
+            print("1. Add Stock")
+            print("2. Remove Stock")
+            print("3. View Portfolio")
+            print("4. Exit")
+            choice = input("Select an option (1-4): ").strip()
+
+            if choice == "1":
+                ticker = input("Enter stock ticker (e.g., AAPL): ").strip().upper()
+                try:
+                    shares = int(input("Enter number of shares: ").strip())
+                    price = float(input("Enter stock price: ").strip())  
+                    self.add_stock(ticker, shares, price)
+                except ValueError:
+                    print("Error: Please enter valid numbers for shares and price.")
+            elif choice == "2":
+                ticker = input("Enter stock ticker (e.g., AAPL): ").strip().upper()
+                try:
+                    shares = int(input("Enter number of shares to remove: ").strip())
+                    self.remove_stock(ticker, shares)
+                except ValueError:
+                    print("Error: Please enter a valid number of shares.")
+            elif choice == "3":
+                self.display_portfolio()
+            elif choice == "4":
+                print("Exiting... Goodbye!")
+                break
+            else:
+                print("Invalid option. Please try again.")
+
+if __name__ == "__main__":
+    portfolio = StockPortfolio()
+    portfolio.run()
+
+# Example Output (Manual Testing)
+# -------------------------------
+# Options:
+# 1. Add Stock
+# 2. Remove Stock
+# 3. View Portfolio
+# 4. Exit
+# Select an option (1-4): 1
+# Enter stock ticker (e.g., AAPL): AAPL
+# Enter number of shares: 10
+# Enter stock price: 150
+# Added 10 shares of AAPL to your portfolio.
+
+# Options:
+# 1. Add Stock
+# 2. Remove Stock
+# 3. View Portfolio
+# 4. Exit
+# Select an option (1-4): 3
+# 
+# Portfolio Summary:
+# Ticker    Shares    Price          Value          
+# --------------------------------------------------
+# AAPL      10        $150.00        $1500.00       
+# --------------------------------------------------
+# Total Portfolio Value: $1500.00
